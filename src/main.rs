@@ -1,10 +1,21 @@
 use egui::{epaint::Shadow};
 use macroquad::prelude::*;
+use miniquad::{log, window::screen_size};
 
 #[macroquad::main("Conway's Game of Life")]
 async fn main() {
+    let mut view_pos = vec2(0.0, 0.0);
+
     loop {
         clear_background(DARKGRAY);
+
+        println!("{:?}", screen_size());
+
+        if is_mouse_button_down(MouseButton::Left) {
+            view_pos += vec2(screen_width()/2.0, screen_height()/2.0)*mouse_delta_position();
+        } else {
+            mouse_delta_position();
+        }
 
         egui_macroquad::ui(|egui_ctx| {
             egui::Window::new("Controls")
@@ -21,7 +32,8 @@ async fn main() {
         });
 
 
-        draw_circle(screen_width()/2.0, screen_height()/2.0, 16.0, WHITE);
+        // draw_circle(screen_width()/2.0 - view_pos.x, screen_height()/2.0 - view_pos.y, 16.0, WHITE);
+        draw_circle(-view_pos.x, -view_pos.y, 16.0, WHITE);
 
         
         egui_macroquad::draw();
